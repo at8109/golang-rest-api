@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"math/rand"
 
 	"github.com/at8109/golang-rest-api/entity"
 	"github.com/at8109/golang-rest-api/repository"
@@ -12,7 +11,9 @@ type PostService interface {
 	Validate(post *entity.Post) error
 	Create(post *entity.Post) (*entity.Post, error)
 	FindAll() ([]entity.Post, error)
-	FindByID(postID string) (entity.Post, error)
+	FindByID(postID string) (*entity.Post, error)
+	DeleteByID(postID string) error
+	UpdateByID(postID string) error
 }
 
 type service struct{}
@@ -38,13 +39,28 @@ func (*service) Validate(post *entity.Post) error {
 	return nil
 }
 func (*service) Create(post *entity.Post) (*entity.Post, error) {
-	post.ID = rand.Int63()
 	return repo.Save(post)
 }
 func (*service) FindAll() ([]entity.Post, error) {
 	return repo.FindAll()
 }
 
-func (*service) FindByID(postID string) (entity.Post, error) {
+func (*service) FindByID(postID string) (*entity.Post, error) {
 	return repo.FindByID(postID)
+}
+
+func (*service) DeleteByID(postID string) error {
+	if postID == "" {
+		err := errors.New("The Post is empty")
+		return err
+	}
+	return repo.DeleteByID(postID)
+}
+
+func (*service) UpdateByID(postID string) error {
+	if postID == "" {
+		err := errors.New("The Post is empty")
+		return err
+	}
+	return repo.UpdateByID(postID)
 }

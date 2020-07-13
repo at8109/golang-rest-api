@@ -21,8 +21,9 @@ var (
 func main() {
 
 	httpRouter.GET("/posts", postController.GetPosts)
-	httpRouter.GET("/posts/{id}", postController.GetPostsByID)
+	httpRouter.GET("/posts/{id}/", postController.GetPostsByID)
 	httpRouter.POST("/posts", postController.AddPost)
-
+	httpRouter.DELETE("/posts/{id}/", postController.DeletePostsByID)
+	httpRouter.PUT("/posts/{id}/", postController.UpdatePostsByID)
 	httpRouter.SERVE(os.Getenv("PORT"))
 }

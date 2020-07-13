@@ -23,6 +23,8 @@ type PostController interface {
 	GetPostsByID(response http.ResponseWriter, request *http.Request)
 	GetPosts(resp http.ResponseWriter, req *http.Request)
 	AddPost(resp http.ResponseWriter, req *http.Request)
+	DeletePostsByID(response http.ResponseWriter, request *http.Request)
+	UpdatePostsByID(response http.ResponseWriter, request *http.Request)
 }
 
 func NewPostController(service service.PostService, cache cache.PostCache) PostController {
@@ -87,4 +89,29 @@ func (*controller) AddPost(resp http.ResponseWriter, req *http.Request) {
 	}
 	resp.WriteHeader(http.StatusOK)
 	json.NewEncoder(resp).Encode(result)
+}
+
+func (*controller) DeletePostsByID(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Content-Type", "application/json")
+
+	postID := strings.Split(request.URL.Path, "/")[2]
+	err := postService.DeleteByID(postID)
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(response).Encode(errors.ServiceError{Message: "Error Deleting the posts"})
+
+	}
+	response.WriteHeader(http.StatusOK)
+}
+func (*controller) UpdatePostsByID(response http.ResponseWriter, request *http.Request) {
+	response.Header().Set("Content-Type", "application/json")
+
+	postID := strings.Split(request.URL.Path, "/")[2]
+	err := postService.UpdateByID(postID)
+	if err != nil {
+		response.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(response).Encode(errors.ServiceError{Message: "Error Updating the posts"})
+
+	}
+	response.WriteHeader(http.StatusOK)
 }

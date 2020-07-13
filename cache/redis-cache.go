@@ -28,7 +28,7 @@ func (cache *redisCache) getClient() *redis.Client {
 		DB:       cache.db,
 	})
 }
-func (cache *redisCache) Set(key string, value entity.Post) {
+func (cache *redisCache) Set(key string, value *entity.Post) {
 	client := cache.getClient()
 
 	json, err := json.Marshal(value)
